@@ -9,19 +9,18 @@ from tools import tools
 def setup_agent():
     """Configura e retorna o agente LangChain usando arquitetura ReAct"""
     
-    # LLM local via Ollama (certifique-se que Ollama está rodando)
+    # LLM local via Ollama (Ollama tem que estar rodando)
     llm = ChatOllama(
         model=LLM_MODEL,
-        temperature=0,  # Respostas mais determinísticas
-        num_predict=150,  # REDUZIDO: limita tamanho da resposta
+        temperature=0,
+        num_predict=150,
         top_p=0.9,
-        repeat_penalty=1.2  # AUMENTADO: penaliza mais repetições
+        repeat_penalty=1.2
     )
     
     # Cria o prompt personalizado
     prompt = PromptTemplate.from_template(REACT_PROMPT_TEMPLATE)
     
-    # Cria o agente ReAct
     agent = create_react_agent(llm, tools, prompt)
     
     # Executor do agente com tratamento de erros
@@ -30,8 +29,8 @@ def setup_agent():
         tools=tools,
         verbose=True,
         handle_parsing_errors="ERROR: Use English keywords only (Action, Thought, Observation, Final Answer). Never translate to Portuguese.",
-        max_iterations=1,  # FORÇADO: apenas 1 iteração
-        max_execution_time=10,  # 10 segundos timeout
+        max_iterations=1,
+        max_execution_time=10,
         return_intermediate_steps=True  # Habilitado para pegar observations
     )
     
